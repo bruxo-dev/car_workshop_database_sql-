@@ -1,0 +1,78 @@
+Project Oficina {
+  database_type: "MySQL"
+}
+
+Table Cliente {
+  cliente_id INT [pk, increment, note: "Unique identifier for each client"]
+  nome VARCHAR(100) [not null, note: "Client's name"]
+  endereco VARCHAR(255) [note: "Client's address"]
+  telefone VARCHAR(15) [unique, note: "Client's phone number"]
+}
+
+Table Veiculo {
+  veiculo_id INT [pk, increment, note: "Unique identifier for each vehicle"]
+  placa VARCHAR(10) [not null, unique, note: "License plate"]
+  modelo VARCHAR(100) [not null, note: "Vehicle model"]
+  marca VARCHAR(50) [not null, note: "Vehicle brand"]
+  ano_fabricacao INT [not null, note: "Year of manufacture"]
+  cliente_id INT [not null, ref: > Cliente.cliente_id, note: "Foreign key linking the vehicle to a client"]
+}
+
+Table Mecanico {
+  mecanico_id INT [pk, increment, note: "Unique identifier for each mechanic"]
+  nome VARCHAR(100) [not null, note: "Mechanic's name"]
+  endereco VARCHAR(255) [note: "Mechanic's address"]
+  especialidade VARCHAR(100) [not null, note: "Mechanic's specialty"]
+}
+
+Table Equipe {
+  equipe_id INT [pk, increment, note: "Unique identifier for each team"]
+  nome_equipe VARCHAR(100) [not null, note: "Team name"]
+}
+
+Table Equipe_Mecanico {
+  equipe_id INT [not null, ref: > Equipe.equipe_id, note: "Foreign key linking to a team"]
+  mecanico_id INT [not null, ref: > Mecanico.mecanico_id, note: "Foreign key linking to a mechanic"]
+  indexes {
+    (equipe_id, mecanico_id) [unique]
+  }
+}
+
+Table Ordem_Servico {
+  ordem_id INT [pk, increment, note: "Unique identifier for each service order"]
+  numero_os VARCHAR(20) [not null, unique, note: "Service order number"]
+  data_emissao DATE [not null, note: "Date the service order was issued"]
+  data_conclusao DATE [note: "Date the service order was completed"]
+  valor_total DECIMAL(10, 2) [note: "Total value of the service order"]
+  status ENUM('pendente', 'em_execucao', 'concluida') [not null, note: "Current status of the order"]
+  veiculo_id INT [not null, ref: > Veiculo.veiculo_id, note: "Foreign key linking to a vehicle"]
+  equipe_id INT [not null, ref: > Equipe.equipe_id, note: "Foreign key linking to a team"]
+}
+
+Table Servico {
+  servico_id INT [pk, increment, note: "Unique identifier for each service"]
+  descricao VARCHAR(255) [not null, note: "Description of the service"]
+  valor_mao_de_obra DECIMAL(10, 2) [not null, note: "Cost of labor"]
+}
+
+Table Peca {
+  peca_id INT [pk, increment, note: "Unique identifier for each part"]
+  descricao VARCHAR(255) [not null, note: "Description of the part"]
+  valor DECIMAL(10, 2) [not null, note: "Cost of the part"]
+}
+
+Table Ordem_Servico_Servico {
+  os_servico_id INT [pk, increment, note: "Unique identifier for the service in an order"]
+  ordem_id INT [not null, ref: > Ordem_Servico.ordem_id, note: "Foreign key linking to a service order"]
+  servico_id INT [not null, ref: > Servico.servico_id, note: "Foreign key linking to a service"]
+  quantidade INT [not null, note: "Quantity of the service performed"]
+  subtotal DECIMAL(10, 2) [not null, note: "Total cost for the service"]
+}
+
+Table Ordem_Servico_Peca {
+  os_peca_id INT [pk, increment, note: "Unique identifier for the part in an order"]
+  ordem_id INT [not null, ref: > Ordem_Servico.ordem_id, note: "Foreign key linking to a service order"]
+  peca_id INT [not null, ref: > Peca.peca_id, note: "Foreign key linking to a part"]
+  quantidade INT [not null, note: "Quantity of the part used"]
+  subtotal DECIMAL(10, 2) [not null, note: "Total cost for the part"]
+}
