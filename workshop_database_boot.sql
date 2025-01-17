@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS e_commerce; -- Tests if the database exists and drops it to prevent errors
-CREATE DATABASE e_commerce; -- Create the database before creating the tables
-USE e_commerce; -- Select the newly created database for subsequent operations
+DROP DATABASE IF EXISTS car_workshop; -- Tests if the database exists and drops it to prevent errors
+CREATE DATABASE car_workshop; -- Create the database before creating the tables
+USE car_workshop; -- Select the newly created database for subsequent operations
 
 -- Creation of the Client table
 CREATE TABLE Cliente (
